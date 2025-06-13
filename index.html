@@ -1,145 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cong Hoang - App Config</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1828/1828919.png">
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: black; /* Fallback */
-            font-family: Arial, sans-serif;
-            text-align: center;
-            color: white;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        .container {
-            margin-top: 10%;
-        }
-        .button {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 15px 30px;
-            margin: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: white;
-            border-radius: 10px;
-        }
-        .button:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        .login-container {
-            margin-top: 20%;
-        }
-        input {
-            padding: 10px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>🎮 Boost Hub</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #2e003e);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      animation: shimmer 8s infinite;
+    }
+
+    h1 {
+      font-size: 26px;
+      background: linear-gradient(to right, #ff00ff, #00ffff, #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s infinite alternate;
+    }
+
+    .btn, .file-select, .success {
+      margin-top: 15px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid #fff;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 80%;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #00ffff88;
+    }
+
+    .switch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px auto;
+      width: 80%;
+      font-size: 17px;
+    }
+
+    .switch input {
+      transform: scale(1.5);
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff00ff; }
+      to { text-shadow: 0 0 20px #00ffff; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .success {
+      display: none;
+      background-color: #00ff7f55;
+      font-weight: bold;
+      animation: glow 1.5s infinite alternate;
+    }
+  </style>
 </head>
 <body>
+  <h1>🎮 BOOST MENU – SABALA UI</h1>
 
-    <!-- Canvas cho hiệu ứng ngôi sao -->
-    <canvas id="starCanvas"></canvas>
+  <div class="switch">
+    <label>Fix Delay</label>
+    <input type="checkbox" id="fixDelay" />
+  </div>
 
-    <div class="login-container" id="login-container">
-        <h2>Nhập Key Để Đăng Nhập</h2>
-        <input type="password" id="keyInput" placeholder="Nhập key...">
-        <button class="button" onclick="checkKey()">Đăng Nhập</button>
-    </div>
-    
-    <div class="container hidden" id="menu-container">
-        <h1>Cong Hoang - App Config</h1>
-        <button class="button" onclick="activateFeature('dpi')">Tăng DPI</button>
-        <button class="button" onclick="activateFeature('fps')">Buff FPS</button>
-        <button class="button" onclick="activateFeature('touch')">Touch Optimization</button>
-        <button class="button" onclick="activateFeature('antilag')">BUFF FPS</button>
-        <button class="button" onclick="activateFeature('fixrung')">GIẢM RUNG</button>
-        <p id="status"></p>
-    </div>
-    
-    <script>
-        const validKey = "@373ah-8394h"; // Key test
-        function checkKey() {
-            let key = document.getElementById("keyInput").value;
-            if (key === validKey) {
-                document.getElementById("login-container").classList.add("hidden");
-                document.getElementById("menu-container").classList.remove("hidden");
-            } else {
-                alert("Key không hợp lệ!");
-            }
-        }
-        function activateFeature(feature) {
-            let status = document.getElementById("status");
-            status.innerHTML = feature.toUpperCase() + " Đã Kích Hoạt!";
-        }
+  <div class="switch">
+    <label>Buff Sensitivity</label>
+    <input type="checkbox" id="buffSensi" />
+  </div>
 
-        // Hiệu ứng ngôi sao di chuyển
-        const canvas = document.getElementById("starCanvas");
-        const ctx = canvas.getContext("2d");
+  <div class="switch">
+    <label>Fix Vibration</label>
+    <input type="checkbox" id="fixVibration" />
+  </div>
 
-        let stars = [], numStars = 100;
+  <input class="file-select" type="file" id="fileInput" />
+  
+  <button class="btn" onclick="runBoost()">🚀 Bắt đầu chạy</button>
+  
+  <div class="success" id="successMsg">✅ Đã chạy thành công!</div>
 
-        function initStars() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = [];
-            for (let i = 0; i < numStars; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 2 + 1,
-                    dx: Math.random() * 0.5 - 0.25,
-                    dy: Math.random() * 0.5 - 0.25
-                });
-            }
-        }
+  <script>
+    function runBoost() {
+      const delay = document.getElementById('fixDelay').checked;
+      const sensi = document.getElementById('buffSensi').checked;
+      const vibrate = document.getElementById('fixVibration').checked;
+      const file = document.getElementById('fileInput').files[0];
 
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
+      console.log("Đang bật: ", { delay, sensi, vibrate, file });
 
-        function updateStars() {
-            stars.forEach(star => {
-                star.x += star.dx;
-                star.y += star.dy;
-                if (star.x < 0 || star.x > canvas.width) star.dx *= -1;
-                if (star.y < 0 || star.y > canvas.height) star.dy *= -1;
-            });
-        }
-
-        function animateStars() {
-            drawStars();
-            updateStars();
-            requestAnimationFrame(animateStars);
-        }
-
-        window.addEventListener("resize", initStars);
-        initStars();
-        animateStars();
-    </script>
-
+      setTimeout(() => {
+        document.getElementById('successMsg').style.display = 'block';
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
